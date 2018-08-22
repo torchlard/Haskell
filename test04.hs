@@ -5,11 +5,11 @@
 
 -- main = do
 --   return ()
---   a <- return "hahaha"
---   line <- getLine
+--   -- a <- return "hahaha"
+--   -- line <- getLine
 --   return "blah"
 --   return 4
---   putStrLn $ line ++ " " ++ a
+--   putStrLn $ "def" ++ " " ++ "no"
 
 -- instance Functor IO where
 --   fmap f action = do
@@ -20,26 +20,41 @@
 -- import Data.List
 -- main = do line <- fmap (intersperse '-' . reverse . map toUpper) getLine
 --   putStrLn line
+-- 
+-- data CMaybe a = CNothing | CJust Int a deriving (Show)
+-- 
+-- instance Functor CMaybe where
+--   fmap f CNothing = CNothing
+--   fmap f (CJust counter x) = CJust (counter+1) (f x)
+-- 
+-- 
+-- class (Functor f)=> Applicative f where
+--   pure :: a -> f a
+--   (<*>) :: f (a->b) -> f a -> f b
+-- 
+-- instance Applicative Maybe where
+--   pure = Just
+--   Nothing <*> _ = Nothing
+--   (Just f) <*> something = fmap f something
+-- 
+-- (++) <$> Just "johntra" <*> Just "volta"
 
-data CMaybe a = CNothing | CJust Int a deriving (Show)
+type KnightPos = (Int,Int)
+moveKnight :: KnightPos -> [KnightPos]
+moveKnight (c,r) = filter onBoard
+  [(c+2,r-1),(c+2,r+1),(c-2,r-1),(c-2,r+1),
+  (c-1,r+2),(c-1,r-2),(c+1,r+2),(c+1,r-2)]
+  where onBoard (c,r) = c `elem` [1..8] && r `elem` [1..8] -- within board
 
-instance Functor CMaybe where
-  fmap f CNothing = CNothing
-  fmap f (CJust counter x) = CJust (counter+1) (f x)
+in3 :: KnightPos -> [KnightPos]
+in3 start = do
+  first <- moveKnight start
+  second <- moveKnight first
+  moveKnight second
+-- in3 start = return start >>= moveKnight >>= moveKnight >>= moveKnight
 
-class (Functor f)=> Applicative f where
-  pure :: a -> f a
-  (<*>) :: f (a->b) -> f a -> f b
-
-instance Applicative Maybe where
-  pure = Just
-  Nothing <*> _ = Nothing
-  (Just f) <*> something = fmap f something
-
-
-
-
-
+-- canReackIn3 :: KnightPos -> KnightPos -> [KnightPos]
+-- canReackIn3 start end = in3 start
 
 
 
